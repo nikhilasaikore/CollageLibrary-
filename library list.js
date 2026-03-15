@@ -19,14 +19,14 @@ const booksData = [
         title: "Statistical Learning",
         author: "Trevor Hastie",
         category: "Data Science",
-        cover: "https://images.squarespace-cdn.com/content/v1/5ff2ad4b4d3ef15494295325/1611005881454-0J0970SCSH99SGP99H4H/ISL_Cover_2.png"
+        cover: "https://miro.medium.com/v2/resize:fit:875/1*XYhM4U79Z2B3rHKImMMrEA.jpeg"
     },
     {
         id: 4,
         title: "Pattern Recognition",
         author: "Christopher Bishop",
         category: "Data Science",
-        cover: "https://m.media-amazon.com/images/I/61M6K2-R0fL._SL1500_.jpg"
+        cover: "https://i0.wp.com/ubiai.tools/wp-content/uploads/2023/11/pattern-recognition-image.jpg?fit=2234%2C1180&ssl=1"
     },
     {
         id: 5,
@@ -47,7 +47,7 @@ const booksData = [
         title: "Storytelling with Data",
         author: "Cole Knaflic",
         category: "Data Science",
-        cover: "https://m.media-amazon.com/images/I/41T-mIDm6rL._SL1500_.jpg"
+        cover: ""
     },
     {
         id: 8,
