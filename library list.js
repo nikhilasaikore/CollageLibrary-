@@ -216,10 +216,11 @@ const booksData = [
     }
 ];
 
+// Load saved data from browser memory
 let myCheckouts = JSON.parse(localStorage.getItem('libraryData')) || [];
 let selectedBook = null;
 
-// --- CHECK LOGIN STATUS ON RELOAD ---
+// ================= APP INITIALIZATION =================
 window.onload = function() {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     if (isLoggedIn === 'true') {
@@ -230,65 +231,77 @@ window.onload = function() {
 function showDashboard() {
     document.getElementById('login-view').classList.remove('active-view');
     document.getElementById('app-view').classList.add('active-view');
-    renderBooks();
+    renderAllBooks();
 }
 
-// --- LOGIN & LOGOUT ---
+// ================= LOGIN & LOGOUT =================
 document.getElementById('loginForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const u = document.getElementById('username').value;
     const p = document.getElementById('password').value;
 
     if(u === 'admin' && p === 'admin123') {
-        localStorage.setItem('isLoggedIn', 'true'); // Save login state
+        localStorage.setItem('isLoggedIn', 'true');
         showDashboard();
     } else {
-        alert("Invalid Login!");
+        alert("Invalid Credentials! Try admin / admin123");
     }
 });
 
 document.getElementById('logoutBtn').addEventListener('click', function() {
-    localStorage.removeItem('isLoggedIn'); // Clear login state
-    location.reload(); // Refresh to show login screen
+    localStorage.removeItem('isLoggedIn');
+    location.reload(); 
 });
 
-// --- NAVIGATION ---
+// ================= NAVIGATION =================
 document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', function() {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
         document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
         this.classList.add('active');
+        
         const target = this.getAttribute('data-target');
         document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active-page'));
         document.getElementById(target).classList.add('active-page');
+
         if(target === 'page-bookings') renderTracker();
     });
 });
 
-// --- RENDER BOOKS ---
-function renderBooks() {
-    ['homeBookGrid', 'catalogBookGrid'].forEach(id => {
-        const grid = document.getElementById(id);
-        if(!grid) return;
-        grid.innerHTML = '';
-        booksData.forEach(book => {
-            const div = document.createElement('div');
-            div.className = 'book-card';
-            div.innerHTML = `
-                <img src="${book.cover}" class="book-cover">
-                <div class="book-details">
-                    <h3>${book.title}</h3>
-                    <button class="btn-primary" onclick="openModal(${book.id})">Take Book</button>
-                </div>
-            `;
-            grid.appendChild(div);
-        });
-    });
+// ================= RENDER SYSTEM =================
+function renderAllBooks() {
+    // 1. Featured Home (First 4 books)
+    const homeGrid = document.getElementById('homeBookGrid');
+    homeGrid.innerHTML = '';
+    booksData.slice(0, 4).forEach(book => homeGrid.appendChild(createBookCard(book)));
+
+    // 2. Full Catalog (All books)
+    const catalogGrid = document.getElementById('catalogBookGrid');
+    catalogGrid.innerHTML = '';
+    booksData.forEach(book => catalogGrid.appendChild(createBookCard(book)));
 }
 
-// --- MODAL & CHECKOUT ---
+function createBookCard(book) {
+    const el = document.createElement('div');
+    el.className = 'book-card';
+    el.innerHTML = `
+        <div class="card-image-wrapper">
+            <img src="${book.cover}" class="book-cover">
+        </div>
+        <div class="book-details">
+            <span class="category-badge">${book.category}</span>
+            <h3>${book.title}</h3>
+            <p class="author-text">by ${book.author}</p>
+            <button class="btn-primary-small" onclick="openModal(${book.id})">Take Book</button>
+        </div>
+    `;
+    return el;
+}
+
+// ================= CHECKOUT MODAL =================
 function openModal(id) {
     selectedBook = booksData.find(b => b.id === id);
-    document.getElementById('modal-book-title').innerText = "Book: " + selectedBook.title;
+    document.getElementById('modal-book-title').innerText = "Assigning: " + selectedBook.title;
     document.getElementById('student-modal').style.display = 'flex';
 }
 
@@ -299,31 +312,34 @@ function closeModal() {
 document.getElementById('confirmCheckout').addEventListener('click', () => {
     const sName = document.getElementById('studentName').value;
     const sID = document.getElementById('studentID').value;
-    if(!sName || !sID) return alert("Fill all details!");
+
+    if(!sName || !sID) return alert("Please fill Student details!");
 
     const now = new Date();
-    const newEntry = {
-        id: Date.now(), // Unique ID for deleting later
+    const entry = {
+        id: Date.now(),
         student: sName,
         studentId: sID,
         bookTitle: selectedBook.title,
         timestamp: `${now.toLocaleDateString()} ${now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`
     };
 
-    myCheckouts.push(newEntry);
+    myCheckouts.push(entry);
     localStorage.setItem('libraryData', JSON.stringify(myCheckouts));
+    
     closeModal();
-    alert("Book Saved!");
+    alert("Record Saved!");
     document.getElementById('studentName').value = '';
     document.getElementById('studentID').value = '';
 });
 
-// --- TRACKER & REMOVE (RETURN) LOGIC ---
+// ================= TRACKER & RETURN =================
 function renderTracker() {
     const tbody = document.getElementById('myBookingsGrid');
     tbody.innerHTML = '';
+
     if (myCheckouts.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No history.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px;">No books currently borrowed.</td></tr>';
         return;
     }
 
@@ -332,7 +348,7 @@ function renderTracker() {
         row.innerHTML = `
             <td>${item.student}</td>
             <td>${item.studentId}</td>
-            <td>${item.bookTitle}</td>
+            <td><strong>${item.bookTitle}</strong></td>
             <td>${item.timestamp}</td>
             <td><span class="status-tag">Borrowed</span></td>
             <td><button class="btn-return" onclick="returnBook(${item.id})">Return</button></td>
@@ -342,9 +358,9 @@ function renderTracker() {
 }
 
 function returnBook(uid) {
-    if(confirm("Confirm book return? This will remove the record.")) {
+    if(confirm("Confirm return? This will remove the student record.")) {
         myCheckouts = myCheckouts.filter(entry => entry.id !== uid);
         localStorage.setItem('libraryData', JSON.stringify(myCheckouts));
-        renderTracker(); // Refresh table
+        renderTracker();
     }
 }
