@@ -36,25 +36,34 @@ body { background: #f3f4f6; overflow: hidden; }
 
 /* Book Cards */
 .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 30px; margin-top: 30px; }
-.book-card { background: white; border-radius: 16px; border: 1px solid #f0f0f0; transition: 0.3s; overflow: hidden; }
+.book-card { background: white; border-radius: 16px; border: 1px solid #f0f0f0; transition: 0.3s; overflow: hidden; height: 100%; display: flex; flex-direction: column; }
 .book-card:hover { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-.card-image-wrapper { height: 260px; background: #f9fafb; padding: 20px; display: flex; align-items: center; justify-content: center; }
-.book-cover { max-height: 100%; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
-.book-details { padding: 20px; text-align: center; }
-.category-badge { background: #eef2ff; color: var(--primary); font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+.card-image-wrapper { height: 280px; background: #f9fafb; padding: 20px; display: flex; align-items: center; justify-content: center; }
+.book-cover { max-height: 100%; width: auto; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); object-fit: contain; }
+.book-details { padding: 20px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+.category-badge { background: #eef2ff; color: var(--primary); font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; display: inline-block; margin-bottom: 10px; }
 
 /* Tracker Table */
-.tracker-card { background: white; border-radius: 16px; border: 1px solid #e5e7eb; padding: 20px; margin-top: 20px; }
-.tracker-table { width: 100%; border-collapse: collapse; text-align: left; }
+.tracker-card { background: white; border-radius: 16px; border: 1px solid #e5e7eb; padding: 20px; margin-top: 20px; overflow-x: auto; }
+.tracker-table { width: 100%; border-collapse: collapse; text-align: left; min-width: 600px; }
 .tracker-table th { padding: 16px; border-bottom: 2px solid #f3f4f6; color: var(--text-muted); font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
 .tracker-table td { padding: 16px; border-bottom: 1px solid #f3f4f6; }
 .status-tag { background: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+.status-returned { background: #f3f4f6; color: #6b7280; padding: 4px 12px; border-radius: 20px; font-size: 12px; }
+
+/* Profile Page */
+.profile-card { background: white; border-radius: 16px; padding: 40px; border: 1px solid #e5e7eb; max-width: 600px; }
+.profile-header { display: flex; gap: 30px; align-items: center; margin-bottom: 40px; padding-bottom: 30px; border-bottom: 1px solid #f3f4f6; }
+.avatar-upload { text-align: center; }
+#profileImage { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 4px solid #eef2ff; }
+.settings-grid { display: flex; flex-direction: column; gap: 15px; }
 
 /* Buttons */
-.btn-primary { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: 600; }
+.btn-primary { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: 600; transition: 0.2s; }
+.btn-primary:hover { background: var(--primary-hover); }
 .btn-primary-small { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 8px; width: 100%; margin-top: 15px; cursor: pointer; font-weight: 500; }
-.btn-return { background: #fee2e2; color: #b91c1c; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; }
-.btn-logout { background: #f3f4f6; border: none; padding: 12px; border-radius: 8px; cursor: pointer; margin-top: auto; }
+.btn-return { background: #fee2e2; color: #b91c1c; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+.btn-logout { background: #f3f4f6; border: none; padding: 12px; border-radius: 8px; cursor: pointer; margin-top: auto; font-weight: 500; }
 
 /* Modal */
 .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
