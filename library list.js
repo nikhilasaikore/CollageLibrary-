@@ -3,11 +3,11 @@ const booksData = [
     // --- Data Science (1-10) ---
     { id: 1, title: "Python for Data Analysis", author: "Wes McKinney", category: "Data Science", cover: "https://learning.oreilly.com/library/cover/9781098104023/" },
     { id: 2, title: "Deep Learning", author: "Ian Goodfellow", category: "Data Science", cover: "https://covers.openlibrary.org/b/id/8109392-L.jpg" },
-    { id: 3, title: "Statistical Learning", author: "Trevor Hastie", category: "Data Science", cover: "https://miro.medium.com/v2/resize:fit:1100/format:webp/1*XYhM4U79Z2B3rHKImMMrEA.jpeg" },
-    { id: 4, title: "Pattern Recognition", author: "Christopher Bishop", category: "Data Science", cover: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTOWJFCxI0JVZljzNZOIDg61jmUXAwNUIW6g&s" },
+    { id: 3, title: "Statistical Learning", author: "Trevor Hastie", category: "Data Science", cover: "https://images.squarespace-cdn.com/content/v1/5ff2ad4b4d3ef15494295325/1611005881454-0J0970SCSH99SGP99H4H/ISL_Cover_2.png" },
+    { id: 4, title: "Pattern Recognition", author: "Christopher Bishop", category: "Data Science", cover: "https://m.media-amazon.com/images/I/61M6K2-R0fL._SL1500_.jpg" },
     { id: 5, title: "Data Science from Scratch", author: "Joel Grus", category: "Data Science", cover: "https://learning.oreilly.com/library/cover/9781492041122/" },
     { id: 6, title: "Hands-On Machine Learning", author: "Aurélien Géron", category: "Data Science", cover: "https://learning.oreilly.com/library/cover/9781098125738/" },
-    { id: 7, title: "Storytelling with Data", author: "Cole Knaflic", category: "Data Science", cover: "https://blogs-images.forbes.com/brentdykes/files/2016/03/data_story3_sq-1.png" },
+    { id: 7, title: "Storytelling with Data", author: "Cole Knaflic", category: "Data Science", cover: "https://m.media-amazon.com/images/I/41T-mIDm6rL._SL1500_.jpg" },
     { id: 8, title: "Data-Intensive Apps", author: "Martin Kleppmann", category: "Data Science", cover: "https://learning.oreilly.com/library/cover/9781449373320/" },
     { id: 9, title: "Practical Statistics", author: "Peter Bruce", category: "Data Science", cover: "https://learning.oreilly.com/library/cover/9781492072935/" },
     { id: 10, title: "Naked Statistics", author: "Charles Wheelan", category: "Data Science", cover: "https://m.media-amazon.com/images/I/51f8B4kH7dL._SL1500_.jpg" },
@@ -37,15 +37,20 @@ const booksData = [
     { id: 30, title: "Head First Patterns", author: "Eric Freeman", category: "Computer Science", cover: "https://learning.oreilly.com/library/cover/9781492057123/" }
 ];
 
-// Load saved data
+// Load saved data (Records stay in localStorage)
 let myCheckouts = JSON.parse(localStorage.getItem('libraryData')) || [];
 let historyData = JSON.parse(localStorage.getItem('historyData')) || [];
 let selectedBook = null;
 
 // ================= APP INITIALIZATION =================
 window.onload = function() {
-    if (localStorage.getItem('isLoggedIn') === 'true') {
+    // FIX: Using sessionStorage so login expires when tab closes
+    if (sessionStorage.getItem('isLoggedIn') === 'true') {
         showDashboard();
+    } else {
+        // Force show login view if not logged in
+        document.getElementById('login-view').classList.add('active-view');
+        document.getElementById('app-view').classList.remove('active-view');
     }
 };
 
@@ -53,7 +58,7 @@ function showDashboard() {
     document.getElementById('login-view').classList.remove('active-view');
     document.getElementById('app-view').classList.add('active-view');
     renderAllBooks();
-    loadProfile(); // Load profile data on start
+    loadProfile(); 
 }
 
 // ================= LOGIN & LOGOUT =================
@@ -63,7 +68,8 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     const p = document.getElementById('password').value;
 
     if(u === 'admin' && p === 'admin123') {
-        localStorage.setItem('isLoggedIn', 'true');
+        // FIX: Store login state in sessionStorage
+        sessionStorage.setItem('isLoggedIn', 'true');
         showDashboard();
     } else {
         alert("Invalid Credentials! Try admin / admin123");
@@ -71,7 +77,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
 });
 
 document.getElementById('logoutBtn').addEventListener('click', function() {
-    localStorage.removeItem('isLoggedIn');
+    sessionStorage.removeItem('isLoggedIn'); // Clear session
     location.reload(); 
 });
 
