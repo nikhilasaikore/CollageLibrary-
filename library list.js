@@ -67,12 +67,12 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     const u = document.getElementById('username').value;
     const p = document.getElementById('password').value;
 
-    if(u === 'nikhila' && p === 'nikhila123') {
+    if(u === 'admin' && p === 'admin123') {
         // FIX: Store login state in sessionStorage
         sessionStorage.setItem('isLoggedIn', 'true');
         showDashboard();
     } else {
-        alert("Invalid Credentials! Try nikhila / nikhila");
+        alert("Invalid Credentials! Try admin / admin123");
     }
 });
 
